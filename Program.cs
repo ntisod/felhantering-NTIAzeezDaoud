@@ -24,7 +24,8 @@ namespace Felhantering
             Console.WriteLine("2. Exempel 2 - Planera för fel med metoden TryParse.");
             Console.WriteLine("3. Exempel 3 - Felhantering med undantag.");
             Console.WriteLine("4. Övning 1 - Fånga fel i exempel 1.");
-            Console.WriteLine("5. Övning 7 - Mata in start, stopp och steg.");
+            Console.WriteLine("5. Övning 6 - Metod som hanterar inmatning");
+            Console.WriteLine("6. Övning 7 - Mata in start, stopp och steg.");
 
             Console.WriteLine();
 
@@ -52,6 +53,9 @@ namespace Felhantering
                     Ovning1();
                     break;
                 case "5":
+                    Ovning6();
+                    break;
+                case "6":
                     Ovning7();
                     break;
             }
@@ -142,7 +146,8 @@ namespace Felhantering
         static void Ovning1()
         {
             // Övning 1
-            try
+
+            try // Försök för hela blocket nedan, om fel då fånga felet
             {
                 Console.Write("Ange din inkomst: ");
                 int inkomst = int.Parse(Console.ReadLine());
@@ -150,12 +155,13 @@ namespace Felhantering
                 int timmar = int.Parse(Console.ReadLine());
                 Console.WriteLine("Din timlön blev: " + (inkomst / timmar) + " kr/h.");
             }
-            catch (FormatException e)
+            catch (FormatException e) // Fånga fel där inmatning är av fel format, inte integer för int.Parse
             {
-                Console.WriteLine("Fel Format\nError Meddelande: " + e.Message);
+                Console.WriteLine("Fel Format\nError Meddelande: " + e.Message); // Skriv ut ett förklarande meddelandet och error meddelandet
             }
             catch (Exception e)
             {
+                // Skriv errorns meddelandet och krascha programmet
                 Console.WriteLine(e.Message);
                 throw;
             }
@@ -193,9 +199,33 @@ namespace Felhantering
                 Console.Write("\nAnge ett steg tal som med går att nå stopp talet\n");
             } while (true);
 
-            // Skriv om talen steget så att det når rätt stopp om steg är negativ eller positiv
+            // Skriv om talen steget så att det når rätt stopp om steg är negativ eller positiv. For loop ser om skillnaden mellan variabeln i och stopp når varandra.
             for (int i = start; Math.Abs(steg) / steg * (i - stopp) <= 0; i += steg)
                 Console.Write($"{i} ");
         }
+
+        static void IntInmatningParser(out int talAttInmata, string meddelande = "Ange tal:") // Meddelandet är den string som skriv ut för att veta vad man ska mata in
+        {
+            // ANVÄNDS I ÖVNING 6
+
+            // Skriv ut inmatnings meddelande
+            Console.Write(meddelande);
+
+            // Kör while loop tills användaren skriver rätt input
+            while (!int.TryParse(Console.ReadLine(), out talAttInmata))
+                Console.Write("\nMata in ett heltal tack!\n" + meddelande); // När det är fel så skrivs det ett fel meddelande och inmatnings meddlandet återigen.
+        }
+
+        static void Ovning6()
+        {
+            // Deklarera inkomst och timmar variablarna och skicka dem till metoden
+            IntInmatningParser(out int inkomst, "Ange inkomst: ");
+            IntInmatningParser(out int timmar, "Ange timmar: ");
+
+            // Skriv ut resultatet
+            Console.WriteLine("Din timlön blev: " + (inkomst / timmar) + " kr/h.");
+        }
+
+        
     }
 }
